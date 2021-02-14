@@ -1,0 +1,132 @@
+STARTING SPRING BOOT PROJECT
+
+1. New "Spring Starter Project"
+
+	-MySQL Driver | Spring Boot Dev Tools | Spring Data JPA | Spring Web
+
+2. Add following to pom.xml
+
+	-tomcat-embed-jasper
+	-jstl
+	-spring-boot-starter-validation
+
+3. Add following to application.properties
+
+spring.mvc.view.prefix=/WEB-INF/
+spring.datasource.url=jdbc:mysql://localhost:3306/<<YOUR_SCHEMA>>
+spring.datasource.username=<<dbuser>>
+spring.datasource.password=<<dbpassword>>
+spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+spring.jpa.hibernate.ddl-auto=update
+spring.mvc.hiddenmethod.filter.enabled=true
+
+4. Create new Schema in MySQL Workbench (UTF-8)
+
+5. Build Model (http://learn.codingdojo.com/m/59/5657/37463)
+
+	-com.[PACKAGE NAME].models
+	-[MODEL NAME].java (New Class)
+	-Copy/Paste the following:
+
+@Column(updatable=false)
+@DateTimeFormat(pattern="yyyy-MM-dd")
+private Date createdAt;
+@DateTimeFormat(pattern="yyyy-MM-dd")
+private Date updatedAt;
+
+@PrePersist
+protected void onCreate(){
+    this.createdAt = new Date();
+}
+@PreUpdate
+protected void onUpdate(){
+    this.updatedAt = new Date();
+}
+
+	-Generate Necessary Constructors
+	-Generate Getters and Setters (All Fields)
+
+6. Build Repository (http://learn.codingdojo.com/m/59/5657/37403)
+
+	-com.[PACKAGE NAME].repositories
+	-[MODEL]Repository.java (New Interface)
+	-add "extends CrudRepository<[MODEL], Long>"
+	-add necessary queries: https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods.query-creation
+	
+7. Build Service (http://learn.codingdojo.com/m/59/5657/37394)
+
+	-com.[PACKAGE NAME].services
+	-[MODEL]Service.java (New Class)
+	-add repository to class attributes
+	-instantiate repository in constructor
+	-add necessary services (Start with 3: all[MODEL]s(); create[MODEL](); find[MODEL](Long id);
+
+8. Create /WEB-INF/ Folder
+
+9. Create index.jsp File
+	
+	-add <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+10. Build Controller
+
+	-com.[PACKAGE NAME].controllers
+	-[MODEL]Controller.java (New Class)
+	-add service to class attributes
+	-instantiate service in constructor
+
+11. Make an app!
+
+(Additional Resources)
+
+Bootstrap CDN (paste in <head>):
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+
+JSTL Form:
+
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>    
+<h1>New Book</h1>
+<form:form action="/books" method="post" modelAttribute="book">
+    <p>
+        <form:label path="title">Title</form:label>
+        <form:errors path="title"/>
+        <form:input path="title"/>
+    </p>
+    <p>
+        <form:label path="description">Description</form:label>
+        <form:errors path="description"/>
+        <form:textarea path="description"/>
+    </p>
+    <p>
+        <form:label path="language">Language</form:label>
+        <form:errors path="language"/>
+        <form:input path="language"/>
+    </p>
+    <p>
+        <form:label path="numberOfPages">Pages</form:label>
+        <form:errors path="numberOfPages"/>     
+        <form:input type="number" path="numberOfPages"/>
+    </p>    
+    <input type="submit" value="Submit"/>
+</form:form>
+
+JSTL Delete (!!!!! MUST HAVE spring.mvc.hiddenmethod.filter.enabled=true ADDED TO application.properties OR THIS WILL NOT WORK!!!!!):
+
+<form action="/books/${book.id}" method="post">
+    <input type="hidden" name="_method" value="delete">
+    <input type="submit" value="Delete">
+</form>
+
+Style JSTL Button like Link:
+
+#notButton{
+  background: none!important;
+  border: none;
+  padding: 0!important;
+  font-family: arial, sans-serif;
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+  display: inline;
+}
