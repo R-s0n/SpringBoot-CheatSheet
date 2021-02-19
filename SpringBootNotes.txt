@@ -28,6 +28,10 @@ spring.mvc.hiddenmethod.filter.enabled=true
 	-[MODEL NAME].java (New Class)
 	-Copy/Paste the following:
 
+@Id
+@GeneratedValue(strategy=GenerationType.IDENTITY)
+private Long id;
+
 @Column(updatable=false)
 @DateTimeFormat(pattern="yyyy-MM-dd")
 private Date createdAt;
@@ -51,7 +55,8 @@ protected void onUpdate(){
 	-com.[PACKAGE NAME].repositories
 	-[MODEL]Repository.java (New Interface)
 	-add "extends CrudRepository<[MODEL], Long>"
-	-add necessary queries: https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods.query-creation
+	-add "List<[MODEL]> findAll();"
+	-add additional necessary queries: https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods.query-creation
 	
 7. Build Service (http://learn.codingdojo.com/m/59/5657/37394)
 
@@ -85,8 +90,9 @@ Bootstrap CDN (paste in <head>):
 
 JSTL Form:
 
+https://docs.spring.io/spring-framework/docs/3.0.0.M3/reference/html/ch17s02.html
+
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>    
-<h1>New Book</h1>
 <form:form action="/books" method="post" modelAttribute="book">
     <p>
         <form:label path="title">Title</form:label>
@@ -111,6 +117,16 @@ JSTL Form:
     <input type="submit" value="Submit"/>
 </form:form>
 
+FORM SELECT (w/ forEach):
+
+https://www.tutorialspoint.com/jsp/jstl_core_foreach_tag.htm
+
+    <form:select path="dojo">
+    	<c:forEach items="${dojos}" var="dojo">
+		<form:option value="${dojo.id}">${dojo.name}</form:option>
+    	</c:forEach>
+    </form:select>
+
 JSTL Delete (!!!!! MUST HAVE spring.mvc.hiddenmethod.filter.enabled=true ADDED TO application.properties OR THIS WILL NOT WORK!!!!!):
 
 <form action="/books/${book.id}" method="post">
@@ -130,3 +146,9 @@ Style JSTL Button like Link:
   cursor: pointer;
   display: inline;
 }
+
+
+JSP / JSTL Format Date
+
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
+<c:set var = "now" value = "${date}" />
