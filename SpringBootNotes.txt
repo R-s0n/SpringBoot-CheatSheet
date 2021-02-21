@@ -6,9 +6,18 @@ STARTING SPRING BOOT PROJECT
 
 2. Add following to pom.xml
 
-	-tomcat-embed-jasper
-	-jstl
-	-spring-boot-starter-validation
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-jasper</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+		</dependency>
+		<dependency> 
+	    		<groupId>org.springframework.boot</groupId> 
+	    		<artifactId>spring-boot-starter-validation</artifactId> 
+		</dependency>
 
 3. Add following to application.properties
 
@@ -50,6 +59,16 @@ protected void onUpdate(){
 	-Generate Necessary Constructors
 	-Generate Getters and Setters (All Fields)
 
+**Additional Notes for Relationships**
+
+ONE TO ONE:
+
+ONE TO MANY:
+
+MANY TO MANY:
+
+
+
 6. Build Repository (http://learn.codingdojo.com/m/59/5657/37403)
 
 	-com.[PACKAGE NAME].repositories
@@ -63,8 +82,32 @@ protected void onUpdate(){
 	-com.[PACKAGE NAME].services
 	-[MODEL]Service.java (New Class)
 	-add repository to class attributes
-	-instantiate repository in constructor
+	-instantiate repository in constructor (@Autowired)
 	-add necessary services (Start with 3: all[MODEL]s(); create[MODEL](); find[MODEL](Long id);
+
+	************
+	| Template |
+	************
+
+	@Autowired
+	private [MODEL]Repository [model]Repository;
+	
+	public List<[MODEL]> all[MODEL]s(){
+		return [model]Repository.findAll();
+	}
+	
+	public [MODEL] create[MODEL]([MODEL] [model]){
+		return [model]Repository.save([model]);
+	}
+	
+	public [MODEL] find[MODEL](Long id){
+		Optional<[MODEL]> optional[MODEL] = [model]Repository.findById(id);
+		if(optional[MODEL].isPresent()) {
+			return optional[MODEL].get();
+		} else {
+			return null;
+		}
+	}
 
 8. Create /WEB-INF/ Folder
 
