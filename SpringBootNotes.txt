@@ -18,6 +18,11 @@ STARTING SPRING BOOT PROJECT
 	    		<groupId>org.springframework.boot</groupId> 
 	    		<artifactId>spring-boot-starter-validation</artifactId> 
 		</dependency>
+        	<dependency>
+            		<groupId>org.mindrot</groupId>
+            		<artifactId>jbcrypt</artifactId>
+            		<version>0.4</version>
+        	</dependency>
 
 3. Add following to application.properties
 
@@ -63,11 +68,51 @@ protected void onUpdate(){
 
 ONE TO ONE:
 
+Model 1 (Person):
+
+    @OneToOne(mappedBy="person", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    private License license;
+
+Model 2 (License):
+
+    @OneToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="person_id")
+    private Person person;
+
 ONE TO MANY:
+	
+Model 1 (Dojo):
+
+    @OneToMany(mappedBy="dojo", fetch = FetchType.LAZY)
+    private List<Ninja> ninjas;
+
+Model 2 (Ninja):
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="dojo_id")
+    private Dojo dojo;
 
 MANY TO MANY:
 
+Model 1 (Product):
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "categories_products", 
+        joinColumns = @JoinColumn(name = "product_id"), 
+        inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private List<Category> categories;
+
+Model 2 (Category):
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "categories_products", 
+        joinColumns = @JoinColumn(name = "category_id"), 
+        inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private List<Product> products;
 
 6. Build Repository (http://learn.codingdojo.com/m/59/5657/37403)
 
@@ -76,6 +121,17 @@ MANY TO MANY:
 	-add "extends CrudRepository<[MODEL], Long>"
 	-add "List<[MODEL]> findAll();"
 	-add additional necessary queries: https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods.query-creation
+
+
+	************
+	| Template |
+	************
+	
+	@Repository
+	public interface [MODEL]Repository extends CrudRepository<[MODEL], Long>{
+	    List<[MODEL]> findAll();
+	}
+
 	
 7. Build Service (http://learn.codingdojo.com/m/59/5657/37394)
 
@@ -113,7 +169,13 @@ MANY TO MANY:
 
 9. Create index.jsp File
 	
-	-add <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+	-add any needed JSP/JSTL tags:
+
+	<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+	<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+	<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
+	<%@ page isErrorPage="true" %>
+	
 
 10. Build Controller
 
@@ -139,24 +201,9 @@ https://docs.spring.io/spring-framework/docs/3.0.0.M3/reference/html/ch17s02.htm
 <form:form action="/books" method="post" modelAttribute="book">
     <p>
         <form:label path="title">Title</form:label>
-        <form:errors path="title"/>
         <form:input path="title"/>
-    </p>
-    <p>
-        <form:label path="description">Description</form:label>
-        <form:errors path="description"/>
-        <form:textarea path="description"/>
-    </p>
-    <p>
-        <form:label path="language">Language</form:label>
-        <form:errors path="language"/>
-        <form:input path="language"/>
-    </p>
-    <p>
-        <form:label path="numberOfPages">Pages</form:label>
-        <form:errors path="numberOfPages"/>     
-        <form:input type="number" path="numberOfPages"/>
-    </p>    
+        <form:errors path="title"/>
+    </p>  
     <input type="submit" value="Submit"/>
 </form:form>
 
