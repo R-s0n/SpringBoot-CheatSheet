@@ -36,7 +36,7 @@ spring.mvc.hiddenmethod.filter.enabled=true
 
 4. Create new Schema in MySQL Workbench (UTF-8)
 
-5. Build Model (http://learn.codingdojo.com/m/59/5657/37463)
+5. Build Model
 
 	-com.[PACKAGE NAME].models
 	-[MODEL NAME].java (New Class)
@@ -114,7 +114,7 @@ Model 2 (Category):
     )
     private List<Product> products;
 
-6. Build Repository (http://learn.codingdojo.com/m/59/5657/37403)
+6. Build Repository
 
 	-com.[PACKAGE NAME].repositories
 	-[MODEL]Repository.java (New Interface)
@@ -133,7 +133,7 @@ Model 2 (Category):
 	}
 
 	
-7. Build Service (http://learn.codingdojo.com/m/59/5657/37394)
+7. Build Service
 
 	-com.[PACKAGE NAME].services
 	-[MODEL]Service.java (New Class)
